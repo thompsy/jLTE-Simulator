@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UEConfig>
+    <!-- not sure how much of this we need -->
+    <UETypeInfoList>
+        <UETypeInfo>
+            <UETypeVal>CPEIndoor</UETypeVal>
+            <noOfRxAnt>2</noOfRxAnt>
+            <antHeight>1.5</antHeight>
+            <antGain>0</antGain>
+            <penetrationGain>10</penetrationGain>
+            <noiseFloor>7</noiseFloor>
+            <antBeamwidth>90.0</antBeamwidth>
+            <UETypeProb>1.0</UETypeProb>
+            <UETypeVoiceCallProb>0.0</UETypeVoiceCallProb>
+            <UETypeDataCallProb>1.0</UETypeDataCallProb>
+        </UETypeInfo>
+    </UETypeInfoList>
+
+    <UE id="0">
+        <type>CPEIndoor</type>
+        <location>
+            <x>1.000000</x>
+            <y>0</y>
+        </location>
+    </UE>
+
+    <UE id="1">
+        <type>CPEIndoor</type>
+        <location>
+            <x>2</x>
+            <y>1.5</y>
+        </location>
+    </UE>
+
+    <UE id="2">
+        <type>CPEIndoor</type>
+        <location>
+            <x>0</x>
+            <y>1.5</y>
+        </location>
+    </UE>
+
+
+</UEConfig>
