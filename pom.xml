@@ -36,13 +36,10 @@
 			<version>14.0.1</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>flanagan</groupId>
 			<artifactId>flanagan</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/flanagan.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -74,7 +71,29 @@
 			<artifactId>logback-core</artifactId>
 			<version>1.0.13</version>
 		</dependency>
-
-
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>uk.co.downthewire.jLTE.fading.GenerateFading</mainClass>
+					<arguments>
+						<argument>-Xmx</argument>
+						<argument>20g</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
