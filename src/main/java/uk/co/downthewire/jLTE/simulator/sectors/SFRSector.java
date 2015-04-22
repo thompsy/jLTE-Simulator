@@ -53,7 +53,8 @@ public class SFRSector extends AbstractSector {
     }
 
     /**
-     * Main scheduling algorithm. Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
+     * Main scheduling algorithm.
+     * Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
      */
     @Override
     protected void doDownlinkAllocation(final int iteration) {

@@ -90,7 +90,7 @@
 					<mainClass>uk.co.downthewire.jLTE.fading.GenerateFading</mainClass>
 					<arguments>
 						<argument>-Xmx</argument>
-						<argument>20g</argument>
+						<argument>2g</argument>
 					</arguments>
 				</configuration>
 			</plugin>

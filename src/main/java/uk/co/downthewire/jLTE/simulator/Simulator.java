@@ -54,7 +54,7 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 	}
 
 	public void configureLogging() throws InterruptedException {
-		MDC.put("userid", config.getString(SCENARIO_PATH) + config.getString(RESULTS_PATH) + logName(config));
+        MDC.put("userid", config.getString(SCENARIO_PATH) + config.getString(RESULTS_PATH) + logName(config));
 		Thread.sleep(5000);
 	}
 
@@ -99,11 +99,12 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 
 	@SuppressWarnings("boxing")
 	public SimulationResults doMain() throws InterruptedException, IOException {
-		Thread.currentThread().setName(String.format("Sim_%d_%d_%d", Thread.currentThread().getId(), config.getInt(FieldNames.EXPERIMENT_ID), config.getInt(FieldNames.CHROMOSOME_ID)));
+		Thread.currentThread().setName(String.format("Sim_%d_%d_%d", Thread.currentThread().getId(),
+                config.getInt(FieldNames.EXPERIMENT_ID), config.getInt(FieldNames.CHROMOSOME_ID)));
 		configureLogging();
 
 		final long time = System.currentTimeMillis();
-		LOG.error("Simulator started...");
+		LOG.debug("Simulator started...");
 
 		TrafficGenerator trafficGenerator = new TrafficGenerator(config);
 		printConfig(config);
@@ -123,7 +124,7 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 		main.run();
 		SimulationResults results = new SimulationResults(main.finalStats(ues));
 
-		LOG.error("Time taken: {}", Double.toString((System.currentTimeMillis() - time) / 1000.0));
+		LOG.debug("Time taken: {}", Double.toString((System.currentTimeMillis() - time) / 1000.0));
 		return results;
 	}
 
@@ -133,7 +134,8 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 		}
 	}
 
-	private static List<UE> createUEs(Configuration config, int numeNodeBs, List<AbstractSector> sectors, TrafficGenerator trafficGenerator) {
+	private static List<UE> createUEs(Configuration config, int numeNodeBs, List<AbstractSector> sectors,
+                                      TrafficGenerator trafficGenerator) {
 
 		List<UE> createdUEs = new ArrayList<>();
 		if (config.getInt(NUM_UES) < 1) {
@@ -146,7 +148,6 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 				final Document doc = db.parse(file);
 				doc.getDocumentElement().normalize();
 				final NodeList nodes = doc.getElementsByTagName("UE");
-
 				for (int s = 0; s < nodes.getLength(); s++) {
 					final UE e = UE.fromXML(config, trafficGenerator, nodes.item(s));
 					createdUEs.add(e);
@@ -177,7 +178,6 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 			final Document doc = db.parse(file);
 			doc.getDocumentElement().normalize();
 			final NodeList nodes = doc.getElementsByTagName("eNodeB");
-
 			for (int s = 0; s < nodes.getLength(); s++) {
 				final ENodeB e = ENodeB.fromXML(config, nodes.item(s));
 				LOG.info(e.toString());

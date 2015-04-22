@@ -1,5 +1,15 @@
 # jLTE Simulator
 
+## Change log
+* system.properties: scenario.numRandomUEs = 1150 => 115
+* fading/GenerateFading: 
+** numUEs = 1150 => 115
+* fading/ReadFading:
+** String filename = GenerateFading.generateFileName(fadingDirectory, 6555001, 3.0, iteration, seed); => 655501
+* simulator/FadingData:
+** file = generateFileName(config.getString(FieldNames.FADING_PATH), 6555001, modifiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED)); => 655501
+** file = generateFileName(config.getString(FieldNames.FADING_PATH_TESTING), 6555001, modifiiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED)); => 65501
+
 ## Overview 
 
 The jLTE Simulator is a network simulator designed to simulate the

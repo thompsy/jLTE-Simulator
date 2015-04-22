@@ -23,7 +23,8 @@ public class UESectorTuple implements Comparable<UESectorTuple> {
         return 128.1 + (36.7 * Math.log10(distance));
     }
 
-    public static double gamma(Location ueLocation, Location sectorLocation, double sectorDowntilt, double sectorAzimuth, double sectorHeight) {
+    public static double gamma(Location ueLocation, Location sectorLocation, double sectorDowntilt,
+                               double sectorAzimuth, double sectorHeight) {
         // Some variables we need.
         final double xs = ueLocation.x * 1000;
         final double ys = ueLocation.y * 1000;
@@ -108,14 +109,20 @@ public class UESectorTuple implements Comparable<UESectorTuple> {
     }
 
     public static double calculateDownlinkGain(AbstractSector sector, UE ue) {
-        return calculateDownlinkGain(ue.location, sector.location, sector.downtilt, sector.azimuth, sector.height, sector.antennaGain, UETypeInfo.ANTENNA_GAIN, UETypeInfo.PENETRATION_LOSS);
+        return calculateDownlinkGain(ue.location, sector.location, sector.downtilt, sector.azimuth, sector.height,
+                sector.antennaGain, UETypeInfo.ANTENNA_GAIN, UETypeInfo.PENETRATION_LOSS);
     }
 
-    public static double calculateDownlinkGain(Location ueLocation, Location sectorLocation, double sectorDowntilt, double sectorAzimuth, double sectorHeight, double sectorAntennaGain, double ueAntennaGain, double uePenetrationGain) {
+    public static double calculateDownlinkGain(Location ueLocation, Location sectorLocation, double sectorDowntilt,
+                                               double sectorAzimuth, double sectorHeight, double sectorAntennaGain,
+                                               double ueAntennaGain, double uePenetrationGain) {
         double gamma = gamma(ueLocation, sectorLocation, sectorDowntilt, sectorAzimuth, sectorHeight);
         double localPathloss = pathLoss(ueLocation, sectorLocation);
         double pathloss = Math.pow(10, -0.1 * localPathloss);
-        double downlinkGain = Math.pow(10, 0.1 * sectorAntennaGain) * Math.pow(10, 0.1 * ueAntennaGain) * Math.pow(10, -0.1 * uePenetrationGain) * pathloss * gamma;
+        double downlinkGain = Math.pow(10, 0.1 * sectorAntennaGain) *
+                              Math.pow(10, 0.1 * ueAntennaGain) *
+                              Math.pow(10, -0.1 * uePenetrationGain) *
+                              pathloss * gamma;
         return downlinkGain;
     }
 
