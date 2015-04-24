@@ -123,7 +123,6 @@ public class UE {
         for (ResourceBlock RB : servingTuple.sector.getResourceBlocks()) {
             double signal = calculateSignal(RB);
             LOG.trace("calculateSignalAcrossAllRBs: UE[{}], RB[{}], signal={}", id, RB.id, signal);
-            signalPerRB[RB.id].accumulate(signal);
         }
     }
 
