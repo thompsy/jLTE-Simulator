@@ -1,11 +1,12 @@
 package uk.co.downthewire.jLTE.simulator;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.co.downthewire.jLTE.simulator.utils.FieldNames;
-
+import uk.co.downthewire.jLTE.helper.BuildPath;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,14 +52,14 @@ public class FadingData {
         int modifiedIteration = iteration % 120;
 
         float[][] fadingValues = new float[numTuples][numRBs];
-
+        String fadingDirectory = BuildPath.getFadingPath(config);
         String file = null;
         if (config.getString(TESTING).equals("${env:lte.testing}"))
-            file = generateFileName(config.getString(FieldNames.FADING_PATH), numFadingChannels, modifiedIteration,
+            file = generateFileName(fadingDirectory, numFadingChannels, modifiedIteration,
                     config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
 
         else
-            file = generateFileName(config.getString(FieldNames.FADING_PATH_TESTING), numFadingChannels,
+            file = generateFileName(fadingDirectory, numFadingChannels,
                     modifiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
 
 
