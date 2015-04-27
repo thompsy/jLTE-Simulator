@@ -94,7 +94,9 @@ public abstract class AbstractSector {
             updateScheduledRBCounters(0);
             return;
         }
-        doDownlinkAllocation(iteration);
+        // use frame configuration to decides if this iteration is for DL or UL
+        // i.e. isDL = true or isDL = false
+        doDownlinkAllocation(iteration, isDL);
     }
 
     protected List<UE> getUEsToSchedule() {
@@ -126,8 +128,8 @@ public abstract class AbstractSector {
         numRBsNotScheduledCounter.accumulate(config.getInt(FieldNames.RBS_PER_SECTOR) - numRBsScheduled);
     }
 
-    protected static void allocateRBToUE(UE ue, ResourceBlock RB) {
-        ue.schedule(RB);
+    protected static void allocateRBToUE(UE ue, ResourceBlock RB, boolean isDL) {
+        ue.schedule(RB, isDL);
         RB.schedule();
     }
 

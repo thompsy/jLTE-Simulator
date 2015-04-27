@@ -88,6 +88,8 @@ public final class FieldNames {
     public final static String RANDOM_GENERAL = "random.general";
     public final static String RANDOM_LOCATION = "random.location";
 
+    public final static String TRAFFIC_UPLINK_PROB = "traffic.uplink.probability";
+
     private FieldNames() {
     }
 
