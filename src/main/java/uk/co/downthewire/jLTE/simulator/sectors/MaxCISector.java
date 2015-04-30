@@ -27,8 +27,9 @@ public class MaxCISector extends AbstractSector {
      * Main scheduling algorithm. Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
      */
     @Override
-    protected void doDownlinkAllocation(final int iteration) {
-        List<UE> toSchedule = getUEsToSchedule();
+    protected void doDownlinkAllocation(final int iteration, final int subframe) {
+        boolean isDL = isDownlinkSubframe(subframe);
+        List<UE> toSchedule = getUEsToSchedule(isDL);
 
         final List<ResourceBlock> unscheduledRBs = resourceBlocks.getUnscheduledRBs(iteration);
 
@@ -43,9 +44,9 @@ public class MaxCISector extends AbstractSector {
             // Schedule the UE with the best signal
             final UE ue = toSchedule.get(toSchedule.size() - 1);
 
-            allocateRBToUE(ue, RB);
+            allocateRBToUE(ue, RB, isDL);
             scheduledRBs += 1;
-            toSchedule = getUEsToSchedule();
+            toSchedule = getUEsToSchedule(isDL);
         }
         updateScheduledRBCounters(scheduledRBs);
     }

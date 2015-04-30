@@ -110,21 +110,22 @@ public class AdaptiveSFRSector extends SFRSector {
 	}
 
 	@Override
-	protected void doDownlinkAllocation(int iteration) {
+	protected void doDownlinkAllocation(int iteration, int subframe) {
 		PsRandom generalRandom = (PsRandom) config.getProperty(FieldNames.RANDOM_GENERAL);
 		double randomTrigger = getRandomTrigger();
 		if (generalRandom.nextDouble() < randomTrigger) {
 			LOG.info("Scheduling UEs randomly");
-			randomDownlinkAllocation(iteration);
+			randomDownlinkAllocation(iteration, subframe);
 		} else {
 			LOG.info("Scheduling UEs using standard SFR appraoch");
-			super.doDownlinkAllocation(iteration);
+			super.doDownlinkAllocation(iteration, subframe);
 		}
 	}
 
-	protected void randomDownlinkAllocation(final int iteration) {
+	protected void randomDownlinkAllocation(final int iteration, final int subframe) {
 		PsRandom generalRandom = (PsRandom) config.getProperty(FieldNames.RANDOM_GENERAL);
-		List<UE> toSchedule = getUEsToSchedule();
+		boolean isDL = isDownlinkSubframe(subframe);
+		List<UE> toSchedule = getUEsToSchedule(isDL);
 
 		final List<ResourceBlock> unscheduledRBs = resourceBlocks.getUnscheduledRBs(iteration);
 
@@ -137,9 +138,9 @@ public class AdaptiveSFRSector extends SFRSector {
 			final int index = generalRandom.nextInteger(toSchedule.size() - 1);
 			final UE ue = toSchedule.get(index);
 
-			allocateRBToUE(ue, RB);
+			allocateRBToUE(ue, RB, isDL);
 			scheduledRBs += 1;
-			toSchedule = getUEsToSchedule();
+			toSchedule = getUEsToSchedule(isDL);
 		}
 
 		updateScheduledRBCounters(scheduledRBs);

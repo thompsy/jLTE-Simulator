@@ -31,6 +31,7 @@ public class SimMain {
     private final Configuration config;
     private final FadingData fadingData;
     private final X2Router x2Router;
+    private final int FRAME_LENGTH = 10;
 
     public SimMain(Configuration config, List<UE> ues, List<AbstractSector> sectors, FadingData fadingData, X2Router x2Router) {
         this.config = config;
@@ -57,8 +58,14 @@ public class SimMain {
         PsRandom generalRandom = (PsRandom) config.getProperty(FieldNames.RANDOM_GENERAL);
         List<DistributedSFRSector> currentlyMutatingSectors = null;
 
+        // Frame is configured before simulation
+        // then reconfigure at the beginning of each frame or when necessary depends on the algorithms
+        for (AbstractSector sector : sectors) {
+            sector.setFrameConfiguration(6);
+        }
+
         // For each time increment (1ms) work out who to schedule.
-        for (int iteration = 0; iteration < config.getInt(ITERATIONS); iteration++) {
+        for (int iteration = 0, subframe = 0; iteration < config.getInt(ITERATIONS); iteration++, subframe++) {
 
             LOG.debug("---- t = {} ms ----", iteration);
 
@@ -82,7 +89,7 @@ public class SimMain {
             }
 
             for (final AbstractSector s : sectors) {
-                s.assignDownlinkRBs(iteration);
+                s.assignDownlinkRBs(iteration, subframe);
             }
 
             for (final UE ue : ues) {
@@ -104,6 +111,14 @@ public class SimMain {
             stats(iteration, ues, sectors, config);
             logUEs(iteration, ues);
 
+            if (subframe >= FRAME_LENGTH) {
+                subframe = 0;
+
+                // reconfigure frame after each 10ms.
+                for (AbstractSector sector : sectors) {
+                    sector.setFrameConfiguration(6);
+                }
+            }
         }
         if (config.getString(ALGORITHM).equals(DISTRIBUTED_SFR)) {
             LOG.error("--- Distributed Genes ---");

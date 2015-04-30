@@ -232,6 +232,10 @@ public class UE {
         return isEdge;
     }
 
+    public int getCurrentRBsQueued(boolean isDL) {
+        return isDL ? (int) dlRBsQueued.getCount() : (int) ulRBsQueued.getCount();
+    }
+
     public int getCurrentRBsQueued() {
         return currentRBsQueued;
     }

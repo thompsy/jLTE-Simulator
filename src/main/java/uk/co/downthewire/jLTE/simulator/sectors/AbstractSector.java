@@ -43,6 +43,7 @@ public abstract class AbstractSector {
     private final SimpleCounter numRBsNotScheduledCounter;
     private final SimpleCounter datarateCounter;
     private final SimpleCounter loadCounter;
+    private int numDlSubframes;
 
     public final List<UE> servedUEs;
 
@@ -88,7 +89,7 @@ public abstract class AbstractSector {
     /**
      * Assign an RB each UE as far as possible.
      */
-    public void assignDownlinkRBs(final int iteration) {
+    public void assignDownlinkRBs(final int iteration, final int subframe) {
         List<UE> ues = servedUEs;
         if (ues.isEmpty()) {
             updateScheduledRBCounters(0);
@@ -96,11 +97,11 @@ public abstract class AbstractSector {
         }
         // use frame configuration to decides if this iteration is for DL or UL
         // i.e. isDL = true or isDL = false
-        doDownlinkAllocation(iteration, isDL);
+        doDownlinkAllocation(iteration, subframe);
     }
 
-    protected List<UE> getUEsToSchedule() {
-        return new ArrayList<>(Collections2.filter(servedUEs, UEComparators.hasRBsQueued()));
+    protected List<UE> getUEsToSchedule(boolean isDL) {
+        return new ArrayList<>(Collections2.filter(servedUEs, UEComparators.hasRBsQueued(isDL)));
     }
 
     public boolean isRBScheduled(ResourceBlock rb) {
@@ -121,7 +122,7 @@ public abstract class AbstractSector {
         return resourceBlocks.getResourceBlocks();
     }
 
-    protected abstract void doDownlinkAllocation(final int iteration);
+    protected abstract void doDownlinkAllocation(final int iteration, final int subframe);
 
     public void updateScheduledRBCounters(final int numRBsScheduled) {
         numRBsScheduledCounter.accumulate(numRBsScheduled);
@@ -198,5 +199,18 @@ public abstract class AbstractSector {
 
     public double getTotalRBsBlocked() {
         return resourceBlocks.getTotalRBsBlocked();
+    }
+
+    // For simplicity, assume that any frame configuration has downlink subframes scheduled first, follow by uplink
+    // @arg dlSubframes int number of subframes used for downlink ( 0 <= dlSubframes < FRAME_LENGTH)
+    public void setFrameConfiguration(int dlSubframes) {
+        // TODO: check if dlSubframes is valid
+        this.numDlSubframes = dlSubframes;
+    }
+
+    // check if this subframe can be scheduled for downlink
+    public boolean isDownlinkSubframe(int subframe) {
+        // TODO: check if subframe is valid
+        return subframe < this.numDlSubframes;
     }
 }
