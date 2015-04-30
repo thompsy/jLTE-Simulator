@@ -54,7 +54,9 @@ public class UE {
     private final SimpleCounter totalDatarates;
     private final SimpleCounter totalSinr;
     private final SimpleCounter totalRBsServed;
-    private final SimpleCounter totalRBsQueued;
+    //private final SimpleCounter totalRBsQueued;
+    private final SimpleCounter ulRBsQueued;
+    private final SimpleCounter dlRBsQueued;
     private final SimpleCounter[] signalPerRB;
 
     private boolean isEdge;
@@ -76,7 +78,9 @@ public class UE {
         this.sectorTuples = new ArrayList<>();
 
         this.totalRBsServed = new SimpleCounter();
-        this.totalRBsQueued = new SimpleCounter();
+        //this.totalRBsQueued = new SimpleCounter();
+        this.ulRBsQueued = new SimpleCounter();
+        this.dlRBsQueued = new SimpleCounter();
         this.totalDatarates = new SimpleCounter();
         this.totalSinr = new SimpleCounter();
 
@@ -102,16 +106,30 @@ public class UE {
     }
 
     /**
-     * Update the DL queue for the UE.
+     * Update the DL/UL queue for the UE.
      */
     public void generateTraffic(double random) {
         int numRbs = trafficGenerator.generateTraffic(trafficType, random);
-        totalRBsQueued.accumulate(numRbs);
+        // decide if demand traffic is UL or DL
+        if (random > config.getDouble(FieldNames.TRAFFIC_UPLINK_PROB)) {
+            // accumulate UL queue
+            ulRBsQueued.accumulate(numRbs);
+        }
+        else {
+            // accumulate DL queue
+            dlRBsQueued.accumulate(numRbs);
+        }
         currentRBsQueued += numRbs;
     }
 
-    public void schedule(ResourceBlock RB) {
+    public void schedule(ResourceBlock RB, boolean isDL) {
         scheduledRBs.add(RB);
+        if (isDL) {
+            dlRBsQueued.accumulate(-1.0);
+        }
+        else {
+            ulRBsQueued.accumulate(-1.0);
+        }
         currentRBsQueued -= 1;
         totalRBsServed.accumulate(1.0);
     }
@@ -214,6 +232,10 @@ public class UE {
         return isEdge;
     }
 
+    public int getCurrentRBsQueued(boolean isDL) {
+        return isDL ? (int) dlRBsQueued.getCount() : (int) ulRBsQueued.getCount();
+    }
+
     public int getCurrentRBsQueued() {
         return currentRBsQueued;
     }
@@ -223,7 +245,7 @@ public class UE {
     }
 
     public int getTotalNumDlRBsQueued() {
-        return (int) totalRBsQueued.getCount();
+        return (int) (ulRBsQueued.getCount() + dlRBsQueued.getCount());
     }
 
     public double getLastDatarate() {

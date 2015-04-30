@@ -27,9 +27,12 @@ public class RandomSector extends AbstractSector {
      * Main scheduling algorithm. Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
      */
     @Override
-    protected void doDownlinkAllocation(final int iteration) {
+    protected void doDownlinkAllocation(final int iteration, final int subframe) {
         PsRandom generalRandom = (PsRandom) config.getProperty(FieldNames.RANDOM_GENERAL);
-        List<UE> toSchedule = getUEsToSchedule();
+        boolean isDL = isDownlinkSubframe(subframe);
+
+        // only get those UEs which has demand traffic of downlink (isDL = true) or uplink (isDL = false) direction
+        List<UE> toSchedule = getUEsToSchedule(isDL);
 
         final List<ResourceBlock> unscheduledRBs = resourceBlocks.getUnscheduledRBs(iteration);
 
@@ -42,9 +45,9 @@ public class RandomSector extends AbstractSector {
             final int index = generalRandom.nextInteger(toSchedule.size() - 1);
             final UE ue = toSchedule.get(index);
 
-            allocateRBToUE(ue, RB);
+            allocateRBToUE(ue, RB, isDL);
             scheduledRBs += 1;
-            toSchedule = getUEsToSchedule();
+            toSchedule = getUEsToSchedule(isDL);
         }
 
         updateScheduledRBCounters(scheduledRBs);

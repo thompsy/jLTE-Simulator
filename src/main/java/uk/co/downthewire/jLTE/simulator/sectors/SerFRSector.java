@@ -24,13 +24,15 @@ public class SerFRSector extends SFRSector {
 	}
 
 	/**
-	 * Main scheduling algorithm. Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
+	 * Main scheduling algorithm.
+	 * Here we schedule the UE which has been scheduled least first until we've run out of UEs or RBs.
 	 */
 	@Override
-	protected void doDownlinkAllocation(final int iteration) {
+	protected void doDownlinkAllocation(final int iteration, final int subframe) {
 		int scheduledRBs = 0;
+		boolean isDL = isDownlinkSubframe(subframe);
 
-		List<UE> toSchedule = getUEsToSchedule();
+		List<UE> toSchedule = getUEsToSchedule(isDL);
 		List<ResourceBlock> unscheduledRBs = resourceBlocks.getUnscheduledRBs(iteration);
 
 		// schedule them based on priority
@@ -43,9 +45,9 @@ public class SerFRSector extends SFRSector {
 			// Schedule the UE with the best signal
 			final UE ue = toSchedule.get(toSchedule.size() - 1);
 
-			allocateRBToUE(ue, RB);
+			allocateRBToUE(ue, RB, isDL);
 			scheduledRBs += 1;
-			toSchedule = getUEsToSchedule();
+			toSchedule = getUEsToSchedule(isDL);
 		}
 
 		updateScheduledRBCounters(scheduledRBs);

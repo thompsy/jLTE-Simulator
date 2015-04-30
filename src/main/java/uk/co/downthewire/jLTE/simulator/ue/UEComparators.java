@@ -6,11 +6,11 @@ import java.util.Comparator;
 
 public final class UEComparators {
 
-    public static Predicate<UE> hasRBsQueued() {
+    public static Predicate<UE> hasRBsQueued(final boolean isDL) {
         return new Predicate<UE>() {
             @Override
             public boolean apply(UE ue) {
-                return ue.getCurrentRBsQueued() > 0;
+                return ue.getCurrentRBsQueued(isDL) > 0;
             }
         };
     }
