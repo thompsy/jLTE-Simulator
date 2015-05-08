@@ -104,7 +104,7 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 		configureLogging();
 
 		final long time = System.currentTimeMillis();
-		LOG.debug("Simulator started...");
+		LOG.error("Simulator started...");
 
 		TrafficGenerator trafficGenerator = new TrafficGenerator(config);
 		printConfig(config);
@@ -124,7 +124,7 @@ public class Simulator extends AbstractConfiguredRunnable<SimulationResults> {
 		main.run();
 		SimulationResults results = new SimulationResults(main.finalStats(ues));
 
-		LOG.debug("Time taken: {}", Double.toString((System.currentTimeMillis() - time) / 1000.0));
+		LOG.error("Time taken: {}", Double.toString((System.currentTimeMillis() - time) / 1000.0));
 		return results;
 	}
 
