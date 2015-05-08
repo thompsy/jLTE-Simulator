@@ -62,7 +62,8 @@ public class UE {
     /**
      * Create a UE at a random location.
      */
-    public UE(Configuration configuration, final int Id, int numeNodeBs, List<AbstractSector> sectors, TrafficGenerator trafficGenerator) {
+    public UE(Configuration configuration, final int Id, int numeNodeBs,
+              List<AbstractSector> sectors, TrafficGenerator trafficGenerator) {
         this(configuration, Id, Location.generateRandomLocation(configuration, numeNodeBs, sectors), trafficGenerator);
     }
 
@@ -122,7 +123,6 @@ public class UE {
         for (ResourceBlock RB : servingTuple.sector.getResourceBlocks()) {
             double signal = calculateSignal(RB);
             LOG.trace("calculateSignalAcrossAllRBs: UE[{}], RB[{}], signal={}", id, RB.id, signal);
-            signalPerRB[RB.id].accumulate(signal);
         }
     }
 
@@ -172,7 +172,8 @@ public class UE {
     private double calculateInterference(ResourceBlock RB) {
         double totalLinearInterference = 0.0;
         for (final UESectorTuple tuple : sectorTuples) {
-            if (tuple.sector.id == servingTuple.sector.id && tuple.sector.servingENodeBId == servingTuple.sector.servingENodeBId) {
+            if (tuple.sector.id == servingTuple.sector.id &&
+                tuple.sector.servingENodeBId == servingTuple.sector.servingENodeBId) {
                 continue;
             }
             if (tuple.sector.isRBScheduled(RB)) {
@@ -188,7 +189,9 @@ public class UE {
     }
 
     /**
-     * Given the SINR (in dB) what would the datarate be (in Mbps). This estimates the maximum datarate based on the most applicable Modulation and Coding Scheme (MCS). See 3GPP 36.942: section A.1
+     * Given the SINR (in dB) what would the datarate be (in Mbps).
+     * This estimates the maximum datarate based on the most applicable Modulation and Coding Scheme (MCS).
+     * See 3GPP 36.942: section A.1
      */
     private static double calculateMbpsFromSinr(double sinr) {
         double bps_per_hz = sinr > MIN_SINR ? Utils.log2(1 + sinr) * UETypeInfo.ATTENUATION_FACTOR : 0;

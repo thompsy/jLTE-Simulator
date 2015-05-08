@@ -1,11 +1,12 @@
 package uk.co.downthewire.jLTE.simulator;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.co.downthewire.jLTE.simulator.utils.FieldNames;
-
+import uk.co.downthewire.jLTE.helper.BuildPath;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,11 +21,15 @@ public class FadingData {
     protected final int numTuples;
     protected final int numRBs;
     private final Configuration config;
+    private final int numFadingChannels;
 
     public FadingData(Configuration config, int numTuples, int numRBs) {
         this.config = config;
         this.numRBs = numRBs;
         this.numTuples = numTuples;
+        int numUEs = config.getInt(FieldNames.NUM_UES);
+        int numSectors = 57;
+        this.numFadingChannels = numUEs * numSectors * numRBs + 1;
     }
 
     @SuppressWarnings("boxing")
@@ -47,19 +52,22 @@ public class FadingData {
         int modifiedIteration = iteration % 120;
 
         float[][] fadingValues = new float[numTuples][numRBs];
-
+        String fadingDirectory = BuildPath.getFadingPath(config);
         String file = null;
         if (config.getString(TESTING).equals("${env:lte.testing}"))
-            file = generateFileName(config.getString(FieldNames.FADING_PATH), 6555001, modifiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
+            file = generateFileName(fadingDirectory, numFadingChannels, modifiedIteration,
+                    config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
+
         else
-            file = generateFileName(config.getString(FieldNames.FADING_PATH_TESTING), 6555001, modifiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
+            file = generateFileName(fadingDirectory, numFadingChannels,
+                    modifiedIteration, config.getInt(FieldNames.SPEED), config.getDouble(FieldNames.SEED));
+
 
         LOG.trace("Reading fading file: {}", file);
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file));
             float[] data = (float[]) inputStream.readObject();
             inputStream.close();
-
             for (int tupleId = 1; tupleId <= numTuples; tupleId++) {
                 for (int RB = 1; RB < numRBs; RB++) {
                     fadingValues[tupleId - 1][RB - 1] = data[tupleId * RB - 1];

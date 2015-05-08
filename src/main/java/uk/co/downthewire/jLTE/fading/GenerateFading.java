@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import uk.co.downthewire.jLTE.simulator.utils.FieldNames;
+import uk.co.downthewire.jLTE.helper.BuildPath;
 import flanagan.complex.Complex;
 import flanagan.math.FourierTransform;
 import flanagan.math.PsRandom;
-
 /*
  * This class is a stand-alone utility that is used to generate 
  * the values used to model the fast-fading. These values are stored
@@ -40,13 +40,14 @@ public final class GenerateFading {
 	public static void main(String[] args) throws IOException, ConfigurationException {
 		Configuration configuration = new PropertiesConfiguration("system.properties").interpolatedConfiguration();
 
-		String fadingDirectory = configuration.getString(FieldNames.FADING_PATH);
+		//String fadingDirectory = configuration.getString(FieldNames.FADING_PATH);
+        String fadingDirectory = BuildPath.getFadingPath(configuration);
 
-		int numUEs = 1150;
+		int numUEs = configuration.getInt(FieldNames.NUM_UES);
 		int numSectors = 57;
-		int numRBs = 100;
+		int numRBs = configuration.getInt(FieldNames.RBS_PER_SECTOR);
 		int numFadingChannels = numUEs * numSectors * numRBs;
-		double[] seeds = { 11111.11111 };
+		double[] seeds =    { 11111.11111 };
 		double[] speeds = { 3.0 };
 
 		int iterations = 128;

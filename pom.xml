@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>flanagan</groupId>
 			<artifactId>flanagan</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
@@ -71,6 +71,12 @@
 			<artifactId>logback-core</artifactId>
 			<version>1.0.13</version>
 		</dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -90,7 +96,7 @@
 					<mainClass>uk.co.downthewire.jLTE.fading.GenerateFading</mainClass>
 					<arguments>
 						<argument>-Xmx</argument>
-						<argument>20g</argument>
+						<argument>2g</argument>
 					</arguments>
 				</configuration>
 			</plugin>

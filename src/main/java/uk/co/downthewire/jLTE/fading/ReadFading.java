@@ -27,12 +27,16 @@ public final class ReadFading {
 		Configuration configuration = new PropertiesConfiguration("system.properties").interpolatedConfiguration();
 		String fadingDirectory = configuration.getString(FieldNames.FADING_PATH);
 
-		double seed = 11111.11111;
+		double seed = configuration.getDouble(FieldNames.SEED);
+        int numUEs = configuration.getInt(FieldNames.NUM_UES);
+        int numSectors = 57;
+        int numRBs = configuration.getInt(FieldNames.RBS_PER_SECTOR);
+        int numFadingChannels = numUEs * numSectors * numRBs + 1;
+        double speed = configuration.getDouble(FieldNames.SPEED);
 		int numIterations = 128;
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
-			String filename = GenerateFading.generateFileName(fadingDirectory, 6555001, 3.0, iteration, seed);
-
+            String filename = GenerateFading.generateFileName(fadingDirectory, numFadingChannels, speed, iteration, seed);
 			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(filename)));
 			float[] data = (float[]) inputStream.readObject();
 			LOG.info("{}", data[channelId]);
