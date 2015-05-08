@@ -37,7 +37,6 @@ public final class ReadFading {
 
 		for (int iteration = 0; iteration < numIterations; iteration++) {
             String filename = GenerateFading.generateFileName(fadingDirectory, numFadingChannels, speed, iteration, seed);
-            System.out.println("filename " + filename);
 			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(filename)));
 			float[] data = (float[]) inputStream.readObject();
 			LOG.info("{}", data[channelId]);
